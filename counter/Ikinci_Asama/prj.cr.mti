@@ -1,0 +1,36 @@
+C:/Users/meteh/OneDrive/Belgeler/Verilog_projects/counter/Dorduncu_Asama/top_module_TB.v {1 {vlog -work work -stats=none C:/Users/meteh/OneDrive/Belgeler/Verilog_projects/counter/Dorduncu_Asama/top_module_TB.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module top_module_TB
+
+Top level modules:
+	top_module_TB
+
+} {} {}} C:/Users/meteh/OneDrive/Belgeler/Verilog_projects/counter/Dorduncu_Asama/clock_divider.v {1 {vlog -work work -stats=none C:/Users/meteh/OneDrive/Belgeler/Verilog_projects/counter/Dorduncu_Asama/clock_divider.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module clock_divider
+
+Top level modules:
+	clock_divider
+
+} {} {}} C:/Users/meteh/OneDrive/Belgeler/Verilog_projects/counter/Dorduncu_Asama/debouncer.v {1 {vlog -work work -stats=none C:/Users/meteh/OneDrive/Belgeler/Verilog_projects/counter/Dorduncu_Asama/debouncer.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module debouncer
+
+Top level modules:
+	debouncer
+
+} {} {}} C:/Users/meteh/OneDrive/Belgeler/Verilog_projects/counter/Dorduncu_Asama/counter.v {1 {vlog -work work -stats=none C:/Users/meteh/OneDrive/Belgeler/Verilog_projects/counter/Dorduncu_Asama/counter.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module counter
+
+Top level modules:
+	counter
+
+} {} {}} C:/Users/meteh/OneDrive/Belgeler/Verilog_projects/counter/Dorduncu_Asama/top_module.v {1 {vlog -work work -stats=none C:/Users/meteh/OneDrive/Belgeler/Verilog_projects/counter/Dorduncu_Asama/top_module.v
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module top_module
+
+Top level modules:
+	top_module
+
+} {} {}}
