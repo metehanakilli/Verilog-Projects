@@ -1,31 +1,33 @@
 /*
- * Dosya Adi       : counter.v
- * Proje Adi       : 4 BIT UPDOWN COUNTER 
- * Yazar           : [METEHAN AKILLI / Sirket Adi]
- * Tarih           : [02/07/2026]
+ * File Name       : counter.v
+ * Project Name    : 4 Bit Updown Counter
+ * Author          : [METEHAN AKILLI / Sirket Adi]
+ * Date            : [02/07/2026]
  * 
- * Açiklama        : 
-
- * 
- * Revizyon Gecmisi:
- * Tarih           Yazar              Aciklama
- * ----------      ---------------    -----------------------------------------
- * 02.07.2026      [METEHAN]           Ilk surum olusturuldu.
+ * Comment     : 
 */
 
 module counter #( parameter inc_dec_val = 2
-)( input wire clk, rst, direction,
+)( input wire clk, rst, btn_out,
 	output wire [3:0] cntr
 );
-
+	
+	reg direction;
 	reg [3:0] temp_cntr;
+	
+	always @(posedge btn_out) begin
+		direction <= direction + 1'b1;
+	end
+	
+	
 	
 	always @(posedge clk, posedge rst) begin
 	
 		if (rst) begin
 			temp_cntr <= 4'b0;
+			direction <= 1'b0;
 			end else begin
-				if (direction == 1'b1) begin
+				if(direction) begin
 					temp_cntr <= temp_cntr + inc_dec_val;
 				end else begin
 					temp_cntr <= temp_cntr - inc_dec_val;
