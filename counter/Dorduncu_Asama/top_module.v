@@ -13,7 +13,7 @@ module top_module (
     input wire clk,
     input wire rst,
     input wire btn_in,
-    output wire [3:0] cntr
+    output wire [7:0] cntr
 );
 
     wire clk_cntr;
@@ -21,40 +21,50 @@ module top_module (
     wire debounced_btn;
 
 
-    clock_divider #(
-        .divide_rate(50)
-    ) clk_div_cntr_inst (
+    clock_divider #(          	//DIVIDER FOR 'counter' MODULE
+        .N_BIT(32),
+        .DIVIDE_RATE(10000000)
+    ) 
+    clk_div_cntr_inst (
         .clk(clk),
         .rst(rst),
         .clk_out(clk_cntr)
     );
 
 
-    clock_divider #(
-        .divide_rate(10)
-    ) clk_div_deb_inst (
+    clock_divider #(			//DIVIDER FOR 'debouncer' MODULE
+		.N_BIT(32),
+        .DIVIDE_RATE(10000)
+    ) 
+    clk_div_deb_inst (
         .clk(clk),
         .rst(rst),
         .clk_out(clk_deb)
     );
 
 
-    debouncer debouncer_inst (
+    debouncer #(
+		.SHIFT_REG(20),
+		.SUFFICIENT_NUMBER_OF_ONES(12),
+		.ONES_COUNT_BIT(5)
+		)
+		debouncer_inst (
         .clk(clk),
         .clk_out(clk_deb),
         .rst(rst),
         .btn_in(btn_in),
-        .sample_rate(1'b1),
         .btn_out(debounced_btn)
     );
 
 
-    counter #(
-        .inc_dec_val(2)
-    ) counter_inst (
+    counter #( 
+		.INC_DEC_VAL(1),
+		.N_BIT(8)
+    ) 
+    counter_inst (
         .clk(clk_cntr),
         .rst(rst),
-        .direction(debounced_btn),
+        .btn_out(debounced_btn),
         .cntr(cntr)
     );
 
