@@ -39,7 +39,30 @@ module top_module_TB();
 
         #2000;
 
-        $display("--- Butona basiliyor (Gurultulu) ---");
+        $display("--- Butona basiliyor---");
+        btn_in = 1; #15;
+        btn_in = 0; #10;
+        btn_in = 1; #25;
+        btn_in = 0; #10;
+        btn_in = 1;
+        
+        $display("--- Butona basildi. Durum: YUKARI SAYMA ---");
+        #4000; 
+
+
+        $display("--- Buton birakiliyor ---");
+        btn_in = 0; #20;
+        btn_in = 1; #10;
+        btn_in = 0; #15;
+        btn_in = 1; #10;
+        btn_in = 0;
+
+        $display("--- Buton birakildi. Durum: ASAGI SAYMA ---");
+        #2000;
+
+
+
+        $display("--- Butona basiliyor ---");
         btn_in = 1; #15;
         btn_in = 0; #10;
         btn_in = 1; #25;
@@ -50,7 +73,7 @@ module top_module_TB();
         #4000; 
 
 
-        $display("--- Buton birakiliyor (Gurultulu) ---");
+        $display("--- Buton birakiliyor ---");
         btn_in = 0; #20;
         btn_in = 1; #10;
         btn_in = 0; #15;
