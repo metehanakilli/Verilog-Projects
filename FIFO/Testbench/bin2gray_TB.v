@@ -9,7 +9,7 @@
 
 module bin2gray_TB();
 	
-	localparam DATA_WIDTH = 4'd4;
+	localparam DATA_WIDTH = 4'd4;		
 	
 	reg [DATA_WIDTH-1 : 0] bin_in;
 	wire [DATA_WIDTH-1 : 0] gray_out;
@@ -28,7 +28,7 @@ module bin2gray_TB();
 		bin_in <= 0;
 		#10;
 		
-		for(i=1; i<(1<<DATA_WIDTH); i=i+1) begin
+		for(i=1; i<(1<<DATA_WIDTH); i=i+1) begin		//prints all output as much as DATA_WIDTH
 			bin_in <= i;
 			#10;
 		end

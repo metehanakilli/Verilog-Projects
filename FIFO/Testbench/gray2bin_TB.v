@@ -25,7 +25,7 @@ module gray2bin_TB();
 
 
 	initial begin		
-		for(i=0; i<(1<<DATA_WIDTH); i=i+1) begin
+		for(i=0; i<(1<<DATA_WIDTH); i=i+1) begin		//prints all output as much as DATA_WIDTH
 			gray_in <= i;
 			#10;
 		end
