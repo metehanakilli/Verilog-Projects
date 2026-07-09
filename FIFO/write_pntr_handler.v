@@ -16,6 +16,7 @@ module write_pntr_handler
 	input wire winc,							//WRITE INCREMENT SIGNAL
 	input wire [DATA_WIDTH : 0] wq2_rpntr,		//SYNCHRONIZED READ POINTER
 	output wire wfull,							//FIFO FUL FLAG (SYNCHRON WITH wclk)
+	output reg wclk_en,
 	output wire [DATA_WIDTH-1 : 0] waddr,		//ADDRES FOR WRITE DATA TO FIFO MEMORY
 	output wire [DATA_WIDTH : 0] wpntr			//WRITE POINTER
 );
@@ -29,6 +30,7 @@ module write_pntr_handler
 		end 
 			else begin
 				if(winc && !wfull) begin
+					wclk_en = 1;
 					temp_cntr <= temp_cntr + 1;		
 				end 
 			end

@@ -10,7 +10,8 @@
 `timescale 1ns / 1ps
 
 module top_module_FIFO #(
-	parameter DATA_WIDTH = 5'd5
+	parameter DATA_WIDTH = 5'd5,
+	parameter ADDR_WIDTH = 5'd5
 )(
     input wire wclk,rclk,
     input wire rrst_n,wrst_n, 
@@ -21,12 +22,15 @@ module top_module_FIFO #(
 	output wire wfull,
 	output wire rempty,
 	
+	input wire [DATA_WIDTH-1 : 0] wdata,
+	
     output wire [DATA_WIDTH:0] wpntr,
     output wire [DATA_WIDTH:0] rpntr,
     output wire [DATA_WIDTH-1:0] waddr,
     output wire [DATA_WIDTH-1:0] raddr,
     output wire [DATA_WIDTH:0] wq2_rpntr,
-    output wire [DATA_WIDTH:0] rq2_wpntr
+    output wire [DATA_WIDTH:0] rq2_wpntr,
+	output wire [DATA_WIDTH-1 : 0]rdata
     
 );
 
@@ -35,6 +39,8 @@ module top_module_FIFO #(
     wire [DATA_WIDTH:0] wq2_rpntr_g;
     wire [DATA_WIDTH:0] rq2_wpntr_g; 
 
+	wire wclk_en_wire;
+	assign wclk_en_wire = winc & (~wfull);
     
     
     bin2gray #(
@@ -111,5 +117,15 @@ module top_module_FIFO #(
 	);
 	
 	
-	
+	FIFO_memory #(
+		.DATA_WIDTH(DATA_WIDTH),
+		.ADDR_WIDTH(ADDR_WIDTH)
+	) FIFO_memory_inst(
+		.wdata(wdata),
+		.rdata(rdata),
+		.waddr(waddr),
+		.raddr(raddr),
+		.wclk(wclk),
+		.wclk_en(wclk_en_wire)
+	);
 endmodule
