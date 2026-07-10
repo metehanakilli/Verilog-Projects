@@ -13,7 +13,7 @@ module FIFO_memory #(
 	parameter ADDR_WIDTH = 5'd5
 )(
 	input wire wclk,
-	input reg wclk_en,
+	input wire wclk_en,
 	input wire [DATA_WIDTH-1 : 0] waddr,
 	input wire [DATA_WIDTH-1 : 0] raddr,
 	input wire [DATA_WIDTH-1 : 0] wdata,

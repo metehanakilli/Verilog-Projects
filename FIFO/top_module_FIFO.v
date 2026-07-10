@@ -20,9 +20,11 @@ module top_module_FIFO #(
 	input wire rinc,
 	
 	output wire wfull,
+	output wire almost_wfull,
 	output wire rempty,
+	output wire almost_rempty,
 	
-	input wire [DATA_WIDTH-1 : 0] wdata,
+	input wire [DATA_WIDTH-1: 0] wdata,
 	
     output wire [DATA_WIDTH:0] wpntr,
     output wire [DATA_WIDTH:0] rpntr,
@@ -30,7 +32,7 @@ module top_module_FIFO #(
     output wire [DATA_WIDTH-1:0] raddr,
     output wire [DATA_WIDTH:0] wq2_rpntr,
     output wire [DATA_WIDTH:0] rq2_wpntr,
-	output wire [DATA_WIDTH-1 : 0]rdata
+	output wire [DATA_WIDTH-1 :0]rdata
     
 );
 
@@ -99,9 +101,10 @@ module top_module_FIFO #(
 		.winc(winc),
 		.wq2_rpntr(wq2_rpntr),
 		.wfull(wfull),
+		.almost_wfull(almost_wfull),
 		.wpntr(wpntr),
-		.waddr(waddr)
-	);
+		.waddr(waddr)	
+		);
 	
 	
 	read_pntr_handler #(
@@ -112,6 +115,7 @@ module top_module_FIFO #(
 		.rinc(rinc),
 		.rq2_wpntr(rq2_wpntr),
 		.rempty(rempty),
+		.almost_rempty(almost_rempty),
 		.rpntr(rpntr),
 		.raddr(raddr)
 	);

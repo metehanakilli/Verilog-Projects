@@ -16,6 +16,7 @@ module read_pntr_handler
 	input wire rinc,							//READ INCREMENT SIGNAL
 	input wire [DATA_WIDTH : 0] rq2_wpntr,		//SYNCHRONIZED WRITE POINTER
 	output wire rempty,							//FIFO EMPTY FLAG (SYNCHRON WITH rclk)
+	output wire almost_rempty,					//FIFO ALMOST EMPTY FLAG (SYNCHRON WITH rclk)
 	output wire [DATA_WIDTH-1 : 0] raddr,		//ADDRES FOR READ DATA TO FIFO MEMORY
 	output wire [DATA_WIDTH : 0] rpntr			//READ POINTER
 );
@@ -23,14 +24,16 @@ module read_pntr_handler
 	reg [DATA_WIDTH:0] temp_cntr;				//TEMPORARILY OUTPUT OF COUNTER
 	
 	assign rempty = (temp_cntr[DATA_WIDTH:0] == rq2_wpntr[DATA_WIDTH:0] );
+	assign almost_rempty_1 = (temp_cntr[DATA_WIDTH:0]+ 'd3 >= rq2_wpntr[DATA_WIDTH:0] || temp_cntr[DATA_WIDTH:0]>= rq2_wpntr[DATA_WIDTH:0]+ 'd25);
+	assign almost_rempty = almost_rempty_1 ^ rempty;
 	
 	always @(posedge rclk or negedge rrst_n) begin : counter		//COUNTS rpntr	
 		if (!rrst_n) begin
-			temp_cntr <= 0;
+			temp_cntr = 0;
 		end 
 			else begin
 				if(rinc && !rempty) begin
-					temp_cntr <= temp_cntr + 1;		
+					temp_cntr = temp_cntr + 1;		
 				end
 			end
 	end
