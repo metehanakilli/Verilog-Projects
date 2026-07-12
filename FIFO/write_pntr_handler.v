@@ -23,7 +23,7 @@ module write_pntr_handler
 
 	reg [DATA_WIDTH:0] temp_cntr;				//TEMPORARILY OUTPUT OF COUNTER
 	wire [DATA_WIDTH-1:0] wfill_level;
-	assign wfill_level = temp_cntr - wq2_rpntr;
+	assign wfill_level = temp_cntr[DATA_WIDTH:0] - wq2_rpntr[DATA_WIDTH:0];
 	
 	always @(posedge wclk or negedge wrst_n) begin : counter		//COUNTS wpntr	
 		if (!wrst_n) begin

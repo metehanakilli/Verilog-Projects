@@ -1,0 +1,63 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.1 (win64) Build 6140274 Thu May 22 00:12:29 MDT 2025
+| Date         : Sun Jul 12 22:28:36 2026
+| Host         : MetStrix running 64-bit major release  (build 9200)
+| Command      : report_drc -file top_module_FIFO_drc_routed.rpt -pb top_module_FIFO_drc_routed.pb -rpx top_module_FIFO_drc_routed.rpx
+| Design       : top_module_FIFO
+| Device       : xc7a200tsbg484-3
+| Speed File   : -3
+| Design State : Fully Routed
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Report DRC
+
+Table of Contents
+-----------------
+1. REPORT SUMMARY
+2. REPORT DETAILS
+
+1. REPORT SUMMARY
+-----------------
+            Netlist: netlist
+          Floorplan: design_1
+      Design limits: <entire design considered>
+           Ruledeck: default
+             Max checks: <unlimited>
+             Checks found: 3
++---------+------------------+----------------------------+--------+
+| Rule    | Severity         | Description                | Checks |
++---------+------------------+----------------------------+--------+
+| NSTD-1  | Critical Warning | Unspecified I/O Standard   | 1      |
+| UCIO-1  | Critical Warning | Unconstrained Logical Port | 1      |
+| PLCK-12 | Warning          | Clock Placer Checks        | 1      |
++---------+------------------+----------------------------+--------+
+
+2. REPORT DETAILS
+-----------------
+NSTD-1#1 Critical Warning
+Unspecified I/O Standard  
+50 out of 54 logical ports use I/O standard (IOSTANDARD) value 'DEFAULT', instead of a user assigned specific value. This may cause I/O contention or incompatibility with the board power or connectivity affecting performance, signal integrity or in extreme cases cause damage to the device or the components to which it is connected. To correct this violation, specify all I/O standards. This design will fail to generate a bitstream unless all logical ports have a user specified I/O standard value defined. To allow bitstream creation with unspecified I/O standard values (not recommended), use this command: set_property SEVERITY {Warning} [get_drc_checks NSTD-1].  NOTE: When using the Vivado Runs infrastructure (e.g. launch_runs Tcl command), add this command to a .tcl file and add that file as a pre-hook for write_bitstream step for the implementation run. Problem ports: almost_rempty, almost_wfull, raddr[4:0], rdata[4:0], rempty, rinc,
+rpntr[5:0], rq2_wpntr[5:0], waddr[4:0], wdata[4:0], wfull, winc,
+wpntr[5:0], wq2_rpntr[5:0].
+Related violations: <none>
+
+UCIO-1#1 Critical Warning
+Unconstrained Logical Port  
+50 out of 54 logical ports have no user assigned specific location constraint (LOC). This may cause I/O contention or incompatibility with the board power or connectivity affecting performance, signal integrity or in extreme cases cause damage to the device or the components to which it is connected. To correct this violation, specify all pin locations. This design will fail to generate a bitstream unless all logical ports have a user specified site LOC constraint defined.  To allow bitstream creation with unspecified pin locations (not recommended), use this command: set_property SEVERITY {Warning} [get_drc_checks UCIO-1].  NOTE: When using the Vivado Runs infrastructure (e.g. launch_runs Tcl command), add this command to a .tcl file and add that file as a pre-hook for write_bitstream step for the implementation run.  Problem ports: almost_rempty, almost_wfull, raddr[4:0], rdata[4:0], rempty, rinc,
+rpntr[5:0], rq2_wpntr[5:0], waddr[4:0], wdata[4:0], wfull, winc,
+wpntr[5:0], wq2_rpntr[5:0].
+Related violations: <none>
+
+PLCK-12#1 Warning
+Clock Placer Checks  
+Poor placement for routing between an IO pin and BUFG. 
+Resolution: Poor placement of an IO pin and a BUFG has resulted in the router using a non-dedicated path between the two.  There are several things that could trigger this DRC, each of which can cause unpredictable clock insertion delays that result in poor timing.  This DRC could be caused by any of the following: (a) a clock port was placed on a pin that is not a CCIO-pin (b)the BUFG has not been placed in the same half of the device or SLR as the CCIO-pin (c) a single ended clock has been placed on the N-Side of a differential pair CCIO-pin.
+ This is normally an ERROR but the CLOCK_DEDICATED_ROUTE constraint is set to FALSE allowing your design to continue. The use of this override is highly discouraged as it may lead to very poor timing results. It is recommended that this error condition be corrected in the design.
+
+	rclk_IBUF_inst (IBUF.O) is locked to F15
+	rclk_IBUF_BUFG_inst (BUFG.I) is provisionally placed by clockplacer on BUFGCTRL_X0Y1
+
+Related violations: <none>
+
+

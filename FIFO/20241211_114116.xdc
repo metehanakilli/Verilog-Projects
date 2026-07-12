@@ -5,27 +5,29 @@
 
 
 ## Clock Signal
-set_property -dict { PACKAGE_PIN R4    IOSTANDARD LVCMOS33 } [get_ports { clk }]; #IO_L13P_T2_MRCC_34 Sch=sysclk
-create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports clk]
 
-set_property -dict { PACKAGE_PIN R4    IOSTANDARD LVCMOS33 } [get_ports { wclk }]; #IO_L13P_T2_MRCC_34 Sch=sysclk
-create_clock -add -name sys_clk_pin -period 1000.00 -waveform {0 5} [get_ports wclk]
+set_property -dict { PACKAGE_PIN R4    IOSTANDARD LVCMOS33 } [get_ports { wclk }]
+create_clock -add -name wclk_pin -period 1000.00 -waveform {0 5} [get_ports wclk]
 
-create_clock -add -name sys_clk_pin -period 200.00 -waveform {0 5} [get_ports rclk]
-set_clock_groups -asynchronous -group [get_clocks wclk] -group [get_clocks rclk]
+set_property -dict { PACKAGE_PIN F15   IOSTANDARD LVCMOS12 } [get_ports { rclk }]
+create_clock -add -name rclk_pin -period 200.00 -waveform {0 4} [get_ports rclk]
+
+set_clock_groups -asynchronous -group [get_clocks wclk_pin] -group [get_clocks rclk_pin]
+
+set_false_path -from [get_clocks wclk_pin] -to [get_clocks rclk_pin]
+set_false_path -from [get_clocks rclk_pin] -to [get_clocks wclk_pin]
+
+set_false_path -from [get_ports wrst_n]
+set_false_path -from [get_ports rrst_n]
 
 
-set_property PACKAGE_PIN <PIN_A> [get_ports wrst_n]
-set_property IOSTANDARD LVCMOS33 [get_ports wrst_n]
-
-
-set_property PACKAGE_PIN <PIN_B> [get_ports rrst_n]
-set_property IOSTANDARD LVCMOS33 [get_ports rrst_n]
+set_property -dict { PACKAGE_PIN D22 IOSTANDARD LVCMOS12 } [get_ports { rrst_n }]
 
 
 set_false_path -from [get_ports wrst_n]
 set_false_path -from [get_ports rrst_n]
 
+set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets -of_objects [get_ports rclk]]
 ## FMC Transceiver clocks (Must be set to value provided by Mezzanine card, currently set to 156.25 MHz)
 ## Note: This clock is attached to a MGTREFCLK pin
 #set_property -dict { PACKAGE_PIN E6 } [get_ports { GTP_CLK_N }];
