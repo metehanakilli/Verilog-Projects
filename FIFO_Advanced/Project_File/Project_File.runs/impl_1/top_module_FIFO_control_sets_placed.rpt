@@ -1,0 +1,90 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2025.1 (win64) Build 6140274 Thu May 22 00:12:29 MDT 2025
+| Date         : Tue Jul 14 00:25:54 2026
+| Host         : MetStrix running 64-bit major release  (build 9200)
+| Command      : report_control_sets -verbose -file top_module_FIFO_control_sets_placed.rpt
+| Design       : top_module_FIFO
+| Device       : xc7a200t
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Control Set Information
+
+Table of Contents
+-----------------
+1. Summary
+2. Histogram
+3. Flip-Flop Distribution
+4. Detailed Control Set Information
+
+1. Summary
+----------
+
++----------------------------------------------------------+-------+
+|                          Status                          | Count |
++----------------------------------------------------------+-------+
+| Total control sets                                       |    12 |
+|    Minimum number of control sets                        |    12 |
+|    Addition due to synthesis replication                 |     0 |
+|    Addition due to physical synthesis replication        |     0 |
+| Unused register locations in slices containing registers |    60 |
++----------------------------------------------------------+-------+
+* Control sets can be merged at opt_design using control_set_merge or merge_equivalent_drivers
+** Run report_qor_suggestions for automated merging and remapping suggestions
+
+
+2. Histogram
+------------
+
++--------------------+-------+
+|       Fanout       | Count |
++--------------------+-------+
+| Total control sets |    12 |
+| >= 0 to < 4        |     4 |
+| >= 4 to < 6        |     0 |
+| >= 6 to < 8        |     1 |
+| >= 8 to < 10       |     3 |
+| >= 10 to < 12      |     0 |
+| >= 12 to < 14      |     3 |
+| >= 14 to < 16      |     0 |
+| >= 16              |     1 |
++--------------------+-------+
+* Control sets can be remapped at either synth_design or opt_design
+
+
+3. Flip-Flop Distribution
+-------------------------
+
++--------------+-----------------------+------------------------+-----------------+--------------+
+| Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
++--------------+-----------------------+------------------------+-----------------+--------------+
+| No           | No                    | No                     |               9 |            5 |
+| No           | No                    | Yes                    |              79 |           26 |
+| No           | Yes                   | No                     |               0 |            0 |
+| Yes          | No                    | No                     |              18 |            6 |
+| Yes          | No                    | Yes                    |              18 |            7 |
+| Yes          | Yes                   | No                     |               0 |            0 |
++--------------+-----------------------+------------------------+-----------------+--------------+
+
+
+4. Detailed Control Set Information
+-----------------------------------
+
++------------------------------------+---------------------------------+----------------------------------+------------------+----------------+--------------+
+|            Clock Signal            |          Enable Signal          |         Set/Reset Signal         | Slice Load Count | Bel Load Count | Bels / Slice |
++------------------------------------+---------------------------------+----------------------------------+------------------+----------------+--------------+
+|  wclk_BUFG                         |                                 | rst_IBUF                         |                1 |              1 |         1.00 |
+|  clock_divider_rclk_inst/rclk_BUFG |                                 |                                  |                1 |              1 |         1.00 |
+|  clock_divider_rclk_inst/rclk_BUFG |                                 | rst_IBUF                         |                1 |              1 |         1.00 |
+|  clk_IBUF_BUFG                     |                                 |                                  |                2 |              2 |         1.00 |
+|  wclk_BUFG                         |                                 |                                  |                2 |              6 |         3.00 |
+|  wclk_BUFG                         | fifo_fsm_inst/E[0]              | write_pntr_handler_inst_w/wrst_n |                3 |              9 |         3.00 |
+|  clock_divider_rclk_inst/rclk_BUFG |                                 | synchronizer_inst_w/rrst_n       |                3 |              9 |         3.00 |
+|  clock_divider_rclk_inst/rclk_BUFG | read_controller_inst/rinc_reg_0 | synchronizer_inst_w/rrst_n       |                4 |              9 |         2.25 |
+|  wclk_BUFG                         |                                 | write_pntr_handler_inst_w/wrst_n |                4 |             12 |         3.00 |
+|  wclk_BUFG                         | fifo_fsm_inst/E[0]              |                                  |                2 |             13 |         6.50 |
+|  clock_divider_rclk_inst/rclk_BUFG | fifo_fsm_inst/E[0]              |                                  |                5 |             13 |         2.60 |
+|  clk_IBUF_BUFG                     |                                 | rst_IBUF                         |               17 |             56 |         3.29 |
++------------------------------------+---------------------------------+----------------------------------+------------------+----------------+--------------+
+
+
