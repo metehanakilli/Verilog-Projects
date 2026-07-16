@@ -19,7 +19,7 @@ module synchronizer
 	reg [DATA_WIDTH : 0] pntr_out_i;
 	
 	always @(posedge clk or negedge rst_n) begin : synchronizer
-		if (~rst_n) begin
+		if (!rst_n) begin
 			pntr_out_i <= 'b0;
 		end else begin
 			pntr_out_i <= pntr_in;						//Collecting noisy data from input button

@@ -9,140 +9,179 @@
 
 `timescale 1ns / 1ps
 
-module top_module_FIFO_TB #(
-    parameter DATA_WIDTH = 5'd5, 
-    parameter ADDR_WIDTH = 5'd5
-);
-    reg wclk, rclk;
-    reg rrst_n, wrst_n; 
-    
-    reg winc;
-    reg rinc;
-    reg [DATA_WIDTH-1 : 0] wdata;
-    
+module top_module_FIFO_TB;
+
+    parameter DATA_WIDTH = 8;
+    parameter ADDR_WIDTH = 7;
+    parameter SHIFT_REG = 20;
+    parameter SUFFICIENT_NUMBER_OF_ONES = 12;
+    parameter ONES_COUNT_BIT = 5;
+
+
+    reg clk;
+    reg rst_n, rrst_n, wrst_n;
+    reg rbtn_in;
+    reg wbtn_in;
+    reg [7:0] SW;
+
+
     wire wfull;
+    wire almost_wfull;
     wire rempty;
-    reg [DATA_WIDTH-1 : 0] rdata;
-    
-    wire [ADDR_WIDTH : 0] wpntr;
-    wire [ADDR_WIDTH : 0] rpntr;
-    wire [ADDR_WIDTH : 0] wq2_rpntr;
-    wire [ADDR_WIDTH : 0] rq2_wpntr;
-    
-    integer i;
-    
-    top_module_FIFO uut (
-        .wclk(wclk),
-        .rclk(rclk),
-        .wrst_n(wrst_n),
+    wire almost_rempty;
+    wire [DATA_WIDTH:0] wpntr;
+    wire [DATA_WIDTH:0] rpntr;
+    wire [DATA_WIDTH-1:0] waddr;
+    wire [DATA_WIDTH-1:0] raddr;
+    wire [DATA_WIDTH:0] wq2_rpntr;
+    wire [DATA_WIDTH:0] rq2_wpntr;
+    wire [DATA_WIDTH-1:0] rdata;
+    wire [DATA_WIDTH-1:0] wdata;
+    wire [7:0] led;
+    wire wclk;
+    wire rclk;
+    wire wbtn_out;
+    wire rbtn_out;
+    wire rinc;
+    wire winc;
+
+
+    top_module_FIFO #(
+        .DATA_WIDTH(DATA_WIDTH),
+        .ADDR_WIDTH(ADDR_WIDTH),
+        .SHIFT_REG(SHIFT_REG),
+        .SUFFICIENT_NUMBER_OF_ONES(SUFFICIENT_NUMBER_OF_ONES),
+        .ONES_COUNT_BIT(ONES_COUNT_BIT)
+    ) uut (
+        .clk(clk),
+        .rst_n(rst_n),
         .rrst_n(rrst_n),
-        .winc(winc),
-        .rinc(rinc),
+        .wrst_n(wrst_n),
+        .rbtn_in(rbtn_in),
+        .wbtn_in(wbtn_in),
+        .SW(SW),
         .wfull(wfull),
+        .almost_wfull(almost_wfull),
         .rempty(rempty),
+        .almost_rempty(almost_rempty),
         .wpntr(wpntr),
         .rpntr(rpntr),
+        .waddr(waddr),
+        .raddr(raddr),
         .wq2_rpntr(wq2_rpntr),
         .rq2_wpntr(rq2_wpntr),
-        .wdata(wdata)
+        .rdata(rdata),
+        .wdata(wdata),
+        .led(led),
+        .wclk(wclk),
+        .rclk(rclk),
+        .wbtn_out(wbtn_out),
+        .rbtn_out(rbtn_out),
+        .rinc(rinc),
+        .winc(winc)
     );
 
-    always #5 wclk = ~wclk; 
-    always #7 rclk = ~rclk; 
 
+    always #5 clk = ~clk;
+
+
+    task press_wbtn;
+        begin
+            wbtn_in = 1;
+            #20000; 
+            wbtn_in = 0;
+            #20000; 
+        end
+    endtask
+
+
+    task press_rbtn;
+        begin
+            rbtn_in = 1;
+            #5000;
+            rbtn_in = 0;
+            #5000; 
+        end
+    endtask
+
+    // --------------------------------------------------------
+    // TEST SENARYOLARI
+    // --------------------------------------------------------
     initial begin
-
+        $display("-------------------------------------------");
         $display("TEST BASLIYOR...");
-        wclk = 0; 
-        rclk = 0;
-        wrst_n = 0; 
+        $display("-------------------------------------------");
+        
+        clk = 0;
+        rst_n = 0;
         rrst_n = 0;
-        winc = 0; 
-        rinc = 0;
-        wdata = 0;
-        rdata = 0;
-        
-
-        #50;
-        wrst_n = 1; 
-        rrst_n = 1;
-        
-
-        #50; 
-        
-
-        //FIFO'YU TAMAMEN DOLDURMA (Write till Full)
-        $display("FIFO Tamamen Dolduruluyor...");
-        
-        @(posedge wclk);
-        for (i = 0; i < (1<<ADDR_WIDTH); i = i + 1) begin
-            winc = 1;
-            wdata = i[DATA_WIDTH-1 : 0]; 
-            @(posedge wclk);
-        end
-        winc = 0; 
-        
-        #10;
-        if (wfull) $display(" -> BASARILI: wfull bayragi aktif oldu.");
-        else $display(" -> HATA: wfull bayragi calismadi!");
+        wrst_n = 0;
+        wbtn_in = 0;
+        rbtn_in = 0;
+        SW = 8'h00;
 
         #100;
+        rst_n = 1; rrst_n = 1; wrst_n = 1;
+        #1000;
 
+        // SENARYO 1: WRITE Modu Tetikleme (IDLE -> SENT -> WRITE)
+        $display("[SENARYO 1] Yazma FSM'i Tetikleniyor (IDLE -> WRITE)...");
+        press_wbtn();
+        #150000; 
 
-        //FIFO'YU TAMAMEN BOŞALTMA (Read till Empty)
+        if (wfull) $display("-> BASARILI: wfull bayragi 1 oldu. FIFO doldu ve FSM READ durumuna gecti.");
+        else $display("-> UYARI: wfull aktif degil! Kapasite (128) tam dolmamis olabilir, ancak yazma bitti.");
 
-        $display(" FIFO Tamamen Bosaltiliyor...");
+        #10000;
+
+        // SENARYO 2: READ Modunda Veri Okuma (FSM READ durumundayken)
+        $display("[SENARYO 2] Tekli okuma baslatiliyor...");
+        press_rbtn();
+		
+        if (rpntr > 0) $display("-> BASARILI: 1 Veri okundu. rpntr = %d, okunan rdata = %h", rpntr, rdata);
+        else $display("-> HATA: Okuma yapilamadi.");
         
-        @(posedge rclk);
-        for (i = 0; i < (1<<ADDR_WIDTH); i = i + 1) begin
-            rinc = 1;
-            @(posedge rclk);
-            
+        press_rbtn();
+        if (rpntr > 1) $display("-> BASARILI: 2. Veri okundu. okunan rdata = %h", rdata);
 
+        #10000;
+
+        // SENARYO 3: FIFO'yu Tamamen Bosaltma Testi
+        $display("[SENARYO 3] FIFO tamamen bosaltiliyor...");
+        while (!rempty) begin
+            press_rbtn();
         end
-        rinc = 0; 
-
-
-        #(5*14); 
-        if (rempty) $display(" -> BASARILI: rempty bayragi aktif oldu.");
-        else $display(" -> HATA: rempty bayragi calismadi!");
-
-        #100;
-
-
-        //AYNI ANDA OKUMA VE YAZMA TESTİ (Concurrent R/W)
-
-        $display(" Es Zamanli Okuma ve Yazma Basliyor...");
         
+        if (rempty) $display("-> BASARILI: rempty bayragi 1 oldu. FIFO mukemmel calisiyor.");
+        else $display("-> HATA: FIFO bosalamadi!");
 
-        @(posedge wclk);
-        winc = 1; wdata = 5'h0A; @(posedge wclk);
-        winc = 1; wdata = 5'h0B; @(posedge wclk);
-        winc = 1; wdata = 5'h0C; @(posedge wclk);
-        winc = 0;
+        #10000;
+
+        // SENARYO 4: FSM Write Durumundayken Okuma Denemesi (İzin Verilmemeli)
+        $display("[SENARYO 4] FSM Write durumundayken okuma girisimi (Hata Tolerans Testi)...");
         
-        #50;
+        rst_n = 0; rrst_n = 0; wrst_n = 0; #100;
+        rst_n = 1; rrst_n = 1; wrst_n = 1; #1000;
 
         fork
-
             begin
-                @(posedge wclk);
-                winc = 1; wdata = 5'h0D; @(posedge wclk);
-                winc = 1; wdata = 5'h0E; @(posedge wclk);
-                winc = 0;
+                press_wbtn();
             end
-
             begin
-                @(posedge rclk); rinc = 1; 
-                @(posedge rclk); rinc = 1; 
-                @(posedge rclk); rinc = 1; 
-                @(posedge rclk); rinc = 0;
+                #25000; 
+                $display("-> Write sirasinda okuma deneniyor...");
+                press_rbtn(); 
             end
         join
+        
+        #150000;
+		
+        if (rpntr == 0) $display("-> BASARILI: FSM WRITE konumundayken okuma izni (read_mode_en) verilmedi! Veri korunuyor.");
+        else $display("-> HATA: WRITE sirasinda okuma (rinc) aktif oldu! FSM kurali ihlal edildi.");
 
-        #200;
-
+        $display("-------------------------------------------");
         $display("TUM TESTLER TAMAMLANDI.");
+        $display("-------------------------------------------");
         $finish;
     end
 

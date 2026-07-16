@@ -7,22 +7,20 @@
  * A??iklama        : Connects the submodules
 */
 
-`timescale 1ns / 1ps
-
 module top_module_FIFO #(
 	parameter DATA_WIDTH = 8'd8,
-	parameter ADDR_WIDTH = 5'd5,
+	parameter ADDR_WIDTH = 8'd8,
 	parameter SHIFT_REG = 20,
 	parameter SUFFICIENT_NUMBER_OF_ONES = 12,
 	parameter ONES_COUNT_BIT = 5
 )(
     input wire clk,
-    input wire rst,rrst_n,wrst_n, 
+    input wire rst_n,rrst_n,wrst_n, 
+    input wire rbtn_in,
+    input wire wbtn_in,
 	
+
 	input wire [7:0] SW,
-	
-	input wire wbtn_in,
-	input wire rbtn_in,
 	
 	output wire wfull,
 	output wire almost_wfull,
@@ -35,7 +33,15 @@ module top_module_FIFO #(
     output wire [DATA_WIDTH:0] wq2_rpntr,
     output wire [DATA_WIDTH:0] rq2_wpntr,
 	output wire [DATA_WIDTH-1 :0]rdata,
-	output reg [7:0] led
+	output wire [DATA_WIDTH-1 :0]wdata,
+	output reg [7:0] led,
+	output wire wclk,
+	output wire rclk,
+	output wire wbtn_out,
+	output wire rbtn_out,
+	output wire rinc,
+	output wire winc
+
 );
 
     wire [DATA_WIDTH:0] gray_writer; 
@@ -43,19 +49,21 @@ module top_module_FIFO #(
     wire [DATA_WIDTH:0] wq2_rpntr_g;
     wire [DATA_WIDTH:0] rq2_wpntr_g;
 
-    wire wclk;
-    wire rclk;
-    
-    wire [DATA_WIDTH-1:0] wdata;
+
+    wire [DATA_WIDTH-1: 0] wdata;
     
 	wire addr_en;
+	wire [ADDR_WIDTH-1: 0] addr; 
 
 	wire wclk_en_wire;
-	assign wclk_en_wire = winc & (~wfull);
+	assign wclk_en_wire = winc & (!wfull);
     
     wire wdebt_in;
     wire rdebt_in;
-    
+	
+	wire read_mode_wclk;	//
+    wire read_mode_rclk;	//
+
     
 //-----------------------WRITE DOMAIN------------------------
 
@@ -64,29 +72,31 @@ module top_module_FIFO #(
 		.N_BIT (8)
     )clock_divider_wclk_inst(							
 		.clk(clk),
-		.rst(rst),
+		.rst_n(rst_n),
 		.clk_out(wclk)
 	);
 	
-	edge_detector #()
+   
+   
+	edge_detector 
 	edge_detector_write_inst(
-		.clk(clk),
+		.clk(wclk),
 		.det_in(wdebt_in),
 		.det_edge(wbtn_out)
 	);
     
-   debouncer #(
+
+    debouncer #(
 	.SHIFT_REG (SHIFT_REG),					
 	.SUFFICIENT_NUMBER_OF_ONES (SUFFICIENT_NUMBER_OF_ONES),	
 	.ONES_COUNT_BIT (ONES_COUNT_BIT)
    ) deb_write_inst(
 	.clk(clk),
-	.rst(rst),
 	.clk_out(wclk),
+	.rst_n(rst_n),
 	.btn_in(wbtn_in),
 	.btn_out(wdebt_in)
    );
-   
     
     bin2gray #(
 		.DATA_WIDTH(DATA_WIDTH)					//BINARY TO GRAY CODE CONVERTER FOR "write_pntr_handler"
@@ -118,21 +128,23 @@ module top_module_FIFO #(
 		.N_BIT (8)
     )clock_divider_rclk_inst(							
 		.clk(clk),
-		.rst(rst),
+		.rst_n(rst_n),
 		.clk_out(rclk)
 	);
 	
-	edge_detector #()
+	edge_detector 
 	edge_detector_read_inst(
-		.clk(clk),
+		.clk(rclk),
 		.det_in(rdebt_in),
 		.det_edge(rbtn_out)
 	);
 	
-	read_controller #()
+	read_controller 
 	read_controller_inst(
-		.rclk(rclk),
+		.clk(rclk),
+		.rst_n(rrst_n),		//
 		.rbtn_out(rbtn_out),
+		.read_mode_en(read_mode_rclk),	//
 		.rinc(rinc)
 	);
 	
@@ -143,8 +155,8 @@ module top_module_FIFO #(
 		.ONES_COUNT_BIT (ONES_COUNT_BIT)
    ) deb_read_inst(
 		.clk(clk),
-		.rst(rst),
 		.clk_out(rclk),
+		.rst_n(rst_n),
 		.btn_in(rbtn_in),
 		.btn_out(rdebt_in)
    );
@@ -202,11 +214,13 @@ module top_module_FIFO #(
 	
 	
 	FIFO_memory #(
-		.DATA_WIDTH(8),
+		.DATA_WIDTH(DATA_WIDTH),
 		.ADDR_WIDTH(ADDR_WIDTH)
 	) FIFO_memory_inst(
 		.wdata(wdata),
 		.rdata(rdata),
+		.rst_n(rst_n),
+		.rinc(rinc),
 		.wclk(wclk),
 		.wclk_en(wclk_en_wire),
 		.rclk(rclk)
@@ -218,21 +232,35 @@ module top_module_FIFO #(
 		.ROM_DEPTH(7'd7)
 	)lut_rom_inst(
 		.rom_clk(wclk),
+		.wrst_n(wrst_n),
 		.data_out(wdata),
+		.addr(addr),
 		.addr_en(addr_en)
 	);
 	
 	
-	fifo_fsm #()
+	fifo_fsm 
 	fifo_fsm_inst(
-		.wclk(wclk),
+		.clk(wclk),
 		.wfull(wfull),
 		.wrst_n(wrst_n),
 		.wbtn_out(wbtn_out),
 		.write_fsm_busy(write_fsm_busy),
 		.addr_en(addr_en),
-		.winc(winc)
+		.winc(winc),
+		.addr(addr),               	//   
+        .read_mode_en(read_mode_wclk) 	//
 	);
+	
+	
+	synchronizer #(				//hepsi
+        .DATA_WIDTH(0)
+    ) synchronizer_read_auth (
+        .clk (rclk),
+        .rst_n (rrst_n),
+        .pntr_in(read_mode_wclk),
+        .pntr_out(read_mode_rclk)
+    );
 	
 	
 	always @(*) begin
@@ -247,5 +275,25 @@ module top_module_FIFO #(
             led[3] = wbtn_out;
             led[4] = rbtn_out;
         end
-    end    
-endmodule
+    end
+    
+/*    ILA_Write
+    (
+        .clk(wclk),
+        .probe0(wdebt_in),
+        .probe1(winc),
+        .probe2(wfull),
+        .probe3(addr),
+        .probe4(wdata)
+     );
+        
+     ILA_Read
+    (
+        .clk(rclk),
+        .probe0(rbtn_out),
+        .probe1(rinc),
+        .probe2(rempty),
+        .probe3(rdata)
+     );
+  */     
+     endmodule

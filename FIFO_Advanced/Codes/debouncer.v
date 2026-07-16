@@ -19,8 +19,8 @@ module debouncer #(
 	parameter ONES_COUNT_BIT = 5				//Suffcient bit width to count 1's
 )( 
 	input wire clk,   	        				//100MHz FPGA clock signal
-	input wire clk_out,  	 	  				//10kHz Clock signal	
-  	input wire rst,			 	 				//Reset	
+ 	input wire clk_out, 		 	  				//10kHz Clock signal	
+  	input wire rst_n,			 	 				//Reset	
 	input wire btn_in,          				//Noisy button input signal
 	output reg btn_out							//Non-noisy button output for direction.	
 );
@@ -31,8 +31,8 @@ module debouncer #(
 	reg btn_sync_1;								//Intermediate stage for synchronizer
 	reg btn_sync_2;								//Synchronized button input
 	
-	always @(posedge clk or posedge rst) begin : synchronizer
-		if (rst) begin
+	always @(posedge clk or posedge rst_n) begin : synchronizer
+		if (!rst_n) begin
 			btn_sync_1 <= 1'b0;
 			btn_sync_2 <= 1'b0;
 		end else begin
@@ -45,8 +45,8 @@ module debouncer #(
 // 20 bit Shift Register
 	reg [SHIFT_REG-1:0] samples;							//Number of shift register bit.
 	
-	always @(posedge clk or posedge rst) begin : shift_reg            //Writing synchronized button input with 1's in "samples"
-		if(rst) begin          					               
+	always @(posedge clk or posedge rst_n) begin : shift_reg            //Writing synchronized button input with 1's in "samples"
+		if(!rst_n) begin          					               
 			samples <= 20'b0;					
 		end else begin
 			samples <= {samples[SHIFT_REG - 2:0] , btn_sync_2};
@@ -58,26 +58,27 @@ module debouncer #(
 	reg [ONES_COUNT_BIT-1 :0] ones_count;						//Counter for 1's
 	integer i;
 	
-	always @(*) begin : count_ones								 
-    ones_count = 0; // Changed to '='
-    for(i=0; i<SHIFT_REG; i=i+1) begin
-        if(samples[i] == 1) begin
-            ones_count = ones_count + 1'd1; // Changed to '='
-        end
-    end
-    end
+	always @(posedge clk) begin : count_ones								 
+		ones_count <= 0;
+		for(i=0; i<SHIFT_REG; i=i+1) begin
+			if(samples[i] == 1) begin
+				ones_count <= ones_count + 1'd1;
+			end
+		end
+	end	
 	
 	
 // If the number of 1's is more than SUFFICIENT_NUMBER_OF_ONES, button out becomes 1.
-	always @(posedge clk_out or posedge rst) begin : debounce_input
-		if(rst) 
-			btn_out <= 0;
-		else begin
+	always @(posedge clk_out or posedge rst_n) begin : debounce_input
+		if(!rst_n) begin 
+			btn_out <= 1'b0;
+		end else begin
 			if(ones_count >= SUFFICIENT_NUMBER_OF_ONES) begin
-				btn_out <= 1;
-			end else
-			btn_out <= 0;
+				btn_out <= 1'b1;
+			end else begin
+			btn_out <= 1'b0;
 			end
+		end
 	end
 	
 endmodule

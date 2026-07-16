@@ -10,26 +10,34 @@
 
 module lut_rom #( 
 	parameter DATA_WIDTH = 8'd8,
-	parameter ROM_DEPTH = 7'd7,
-	parameter ADDR_WIDTH = 5'd5
+	parameter ADDR_WIDTH = 8'd8
 )(
 	input wire rom_clk,	 								//CLOCK FOR ROM MEMORY 5MHz
 	input wire addr_en,
+	input wire wrst_n,
+	output wire [ADDR_WIDTH-1 : 0] addr,
 	output wire [DATA_WIDTH-1 : 0] data_out				//DATA FOR WRITE FIFO
 );
-	reg [ADDR_WIDTH-1 : 0] addr;					    //ADDRES OF DATA 
-	reg [DATA_WIDTH-1:0] rom_mem [0 : ROM_DEPTH-1];		//ROM MEMORY DESCRIPTION
+	reg [ADDR_WIDTH-1 : 0] addr_i;					    //ADDRES OF DATA 
+	reg [DATA_WIDTH-1:0] rom_mem [0 : 255];		//ROM MEMORY DESCRIPTION
 	reg [DATA_WIDTH-1 : 0] data_out_i;
 	
 	initial begin
 		$readmemb ("memory8bit.mem", rom_mem);			//AUTOMATIC INITIALIZATION
 	end
 	
-	always @(posedge rom_clk) begin
-		data_out_i <= rom_mem[addr];						//READING DATA
-		if(addr_en) begin
-			addr <= addr + 1'b1;
+	always @(posedge rom_clk or negedge wrst_n) begin
+		if(!wrst_n) begin
+			addr_i <=0;
+			data_out_i <=0;
+		end else begin						
+			if(addr_en) begin
+				data_out_i <= rom_mem[addr];					//READING DATA
+				addr_i <= addr_i + 1'b1;
+			end
 		end
 	end
 	assign data_out = data_out_i;
+	assign addr = addr_i;
+	
 endmodule
