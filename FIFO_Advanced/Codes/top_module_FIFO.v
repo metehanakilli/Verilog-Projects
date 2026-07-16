@@ -9,7 +9,7 @@
 
 module top_module_FIFO #(
 	parameter DATA_WIDTH = 8'd8,
-	parameter ADDR_WIDTH = 8'd8,
+	parameter ADDR_WIDTH = 7'd7,
 	parameter SHIFT_REG = 20,
 	parameter SUFFICIENT_NUMBER_OF_ONES = 12,
 	parameter ONES_COUNT_BIT = 5
@@ -50,7 +50,6 @@ module top_module_FIFO #(
     wire [DATA_WIDTH:0] rq2_wpntr_g;
 
 
-    wire [DATA_WIDTH-1: 0] wdata;
     
 	wire addr_en;
 	wire [ADDR_WIDTH-1: 0] addr; 
@@ -228,8 +227,7 @@ module top_module_FIFO #(
 	
 	lut_rom #(
 		.DATA_WIDTH(DATA_WIDTH),
-		.ADDR_WIDTH(ADDR_WIDTH),
-		.ROM_DEPTH(7'd7)
+		.ADDR_WIDTH(ADDR_WIDTH)
 	)lut_rom_inst(
 		.rom_clk(wclk),
 		.wrst_n(wrst_n),

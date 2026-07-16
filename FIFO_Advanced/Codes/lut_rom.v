@@ -15,10 +15,9 @@ module lut_rom #(
 	input wire rom_clk,	 								//CLOCK FOR ROM MEMORY 5MHz
 	input wire addr_en,
 	input wire wrst_n,
-	output wire [ADDR_WIDTH-1 : 0] addr,
+	input wire [ADDR_WIDTH-1 : 0] addr,
 	output wire [DATA_WIDTH-1 : 0] data_out				//DATA FOR WRITE FIFO
 );
-	reg [ADDR_WIDTH-1 : 0] addr_i;					    //ADDRES OF DATA 
 	reg [DATA_WIDTH-1:0] rom_mem [0 : 255];		//ROM MEMORY DESCRIPTION
 	reg [DATA_WIDTH-1 : 0] data_out_i;
 	
@@ -28,16 +27,13 @@ module lut_rom #(
 	
 	always @(posedge rom_clk or negedge wrst_n) begin
 		if(!wrst_n) begin
-			addr_i <=0;
 			data_out_i <=0;
 		end else begin						
 			if(addr_en) begin
 				data_out_i <= rom_mem[addr];					//READING DATA
-				addr_i <= addr_i + 1'b1;
 			end
 		end
 	end
 	assign data_out = data_out_i;
-	assign addr = addr_i;
 	
 endmodule

@@ -21,15 +21,14 @@ module FIFO_memory #(
 	output reg [DATA_WIDTH-1 : 0]rdata
 );
 	reg [DATA_WIDTH-1 : 0] ram [0 : (1<<ADDR_WIDTH)-1];
-	reg [DATA_WIDTH-1 : 0] waddr;
-	reg [DATA_WIDTH-1 : 0] raddr;
+	reg [ADDR_WIDTH-1 : 0] waddr;
+	reg [ADDR_WIDTH-1 : 0] raddr;
 	
 	always @(posedge wclk or negedge rst_n) begin
 		if(!rst_n) begin
 			waddr 				<= 0;			
 		end else begin
 			if(wclk_en) begin
-				ram[waddr] 		<= wdata;
 				waddr 			<= waddr + 'b1;
 			end
 		end
@@ -39,12 +38,24 @@ module FIFO_memory #(
 	always @(posedge rclk or negedge rst_n) begin
 		if(!rst_n) begin
 			raddr 		<= 0;
-			rdata <= 0; //
 		end else begin
 			if(rinc) begin
-				rdata 	<= ram[raddr];
 				raddr 	<= raddr + 'b1;
 			end
 		end
 	end
+	
+	always @(posedge wclk) begin
+        if (wclk_en) begin
+            ram[waddr] <= wdata;
+        end
+    end
+
+
+    always @(posedge rclk) begin
+        if (rinc) begin
+            rdata <= ram[raddr];
+        end
+    end
+	
 endmodule

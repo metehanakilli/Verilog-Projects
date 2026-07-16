@@ -2,9 +2,9 @@
 2020.2
 May 22 2025
 00:13:55
-C:/Verilog_projects/FIFO_Advanced/Codes/FIFO_memory.v,1784223459,verilog,,C:/Verilog_projects/FIFO_Advanced/Codes/bin2gray.v,,FIFO_memory,,,../../../../../../../Xilinx/2025.1/Vivado/data/rsb/busdef,,,,,
+C:/Verilog_projects/FIFO_Advanced/Codes/FIFO_memory.v,1784226093,verilog,,C:/Verilog_projects/FIFO_Advanced/Codes/bin2gray.v,,FIFO_memory,,,../../../../../../../Xilinx/2025.1/Vivado/data/rsb/busdef,,,,,
 C:/Verilog_projects/FIFO_Advanced/Codes/bin2gray.v,1784218723,verilog,,C:/Verilog_projects/FIFO_Advanced/Codes/clock_divider.v,,bin2gray,,,../../../../../../../Xilinx/2025.1/Vivado/data/rsb/busdef,,,,,
-C:/Verilog_projects/FIFO_Advanced/Codes/clock_divider.v,1784218723,verilog,,C:/Verilog_projects/FIFO_Advanced/Codes/debouncer.v,,clock_divider,,,../../../../../../../Xilinx/2025.1/Vivado/data/rsb/busdef,,,,,
+C:/Verilog_projects/FIFO_Advanced/Codes/clock_divider.v,1784224354,verilog,,C:/Verilog_projects/FIFO_Advanced/Codes/debouncer.v,,clock_divider,,,../../../../../../../Xilinx/2025.1/Vivado/data/rsb/busdef,,,,,
 C:/Verilog_projects/FIFO_Advanced/Codes/debouncer.v,1784218723,verilog,,C:/Verilog_projects/FIFO_Advanced/Codes/edge_detector.v,,debouncer,,,../../../../../../../Xilinx/2025.1/Vivado/data/rsb/busdef,,,,,
 C:/Verilog_projects/FIFO_Advanced/Codes/edge_detector.v,1784218723,verilog,,C:/Verilog_projects/FIFO_Advanced/Codes/fifo_fsm.v,,edge_detector,,,../../../../../../../Xilinx/2025.1/Vivado/data/rsb/busdef,,,,,
 C:/Verilog_projects/FIFO_Advanced/Codes/fifo_fsm.v,1784220571,verilog,,C:/Verilog_projects/FIFO_Advanced/Codes/gray2bin.v,,fifo_fsm,,,../../../../../../../Xilinx/2025.1/Vivado/data/rsb/busdef,,,,,
