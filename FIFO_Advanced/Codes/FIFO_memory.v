@@ -9,8 +9,8 @@
 
 
 module FIFO_memory #(
-	parameter DATA_WIDTH = 5'd5,
-	parameter ADDR_WIDTH = 5'd5
+	parameter DATA_WIDTH = 7'd7,
+	parameter ADDR_WIDTH = 6'd6
 )(
 	input wire wclk,
 	input wire rclk,

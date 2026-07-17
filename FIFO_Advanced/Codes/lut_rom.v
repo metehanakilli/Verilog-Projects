@@ -9,8 +9,8 @@
 
 
 module lut_rom #( 
-	parameter DATA_WIDTH = 8'd8,
-	parameter ADDR_WIDTH = 8'd8
+	parameter DATA_WIDTH = 7'd7,
+	parameter ADDR_WIDTH = 6'd6
 )(
 	input wire rom_clk,	 								//CLOCK FOR ROM MEMORY 5MHz
 	input wire addr_en,
@@ -18,7 +18,7 @@ module lut_rom #(
 	input wire [ADDR_WIDTH-1 : 0] addr,
 	output wire [DATA_WIDTH-1 : 0] data_out				//DATA FOR WRITE FIFO
 );
-	reg [DATA_WIDTH-1:0] rom_mem [0 : 255];		//ROM MEMORY DESCRIPTION
+	reg [DATA_WIDTH-1:0] rom_mem [0 : 127];		//ROM MEMORY DESCRIPTION
 	reg [DATA_WIDTH-1 : 0] data_out_i;
 	
 	initial begin
