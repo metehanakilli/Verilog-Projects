@@ -14,7 +14,7 @@ module lut_rom #(
 )(
 	input wire rom_clk,	 								//CLOCK FOR ROM MEMORY 5MHz
 	input wire addr_en,
-	input wire wrst_n,
+	input wire rst_n,
 	input wire [ADDR_WIDTH-1 : 0] addr,
 	output wire [DATA_WIDTH-1 : 0] data_out				//DATA FOR WRITE FIFO
 );
@@ -25,12 +25,12 @@ module lut_rom #(
 		$readmemb ("memory8bit.mem", rom_mem);			//AUTOMATIC INITIALIZATION
 	end
 	
-	always @(posedge rom_clk or negedge wrst_n) begin
-		if(!wrst_n) begin
+	always @(posedge rom_clk or negedge rst_n) begin	//READING DATA
+		if(!rst_n) begin
 			data_out_i <=0;
 		end else begin						
 			if(addr_en) begin
-				data_out_i <= rom_mem[addr];					//READING DATA
+				data_out_i <= rom_mem[addr];					
 			end
 		end
 	end

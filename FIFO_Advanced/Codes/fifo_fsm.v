@@ -13,8 +13,10 @@ module fifo_fsm #(
 )(
     input wire clk,
     input wire wfull,
-    input wire wrst_n,
+    input wire rst_n,
+    input wire rbtn_out,
     input wire wbtn_out,
+    input wire rempty,
     output reg write_fsm_busy,
     output reg addr_en,
     output reg winc,
@@ -23,24 +25,23 @@ module fifo_fsm #(
 );
     
     localparam IDLE  = 2'd0;		//
-    localparam SENT  = 2'd1;
-    localparam WRITE = 2'd2;
-    localparam READ  = 2'd3;
+    localparam SENT_READ  = 2'd1;
+    localparam WRITE_READ = 2'd2;
 
     reg [1:0] current_state;
     reg wbtn_en;
 
 
-    always @(posedge wbtn_out or negedge wrst_n) begin
-        if(!wrst_n) begin
+    always @(posedge wbtn_out or negedge rst_n) begin
+        if(!rst_n) begin
             wbtn_en <= 1'b0;
         end else begin
             wbtn_en <= 1'b1;
         end
     end
 
-    always @(posedge clk or negedge wrst_n) begin
-        if(!wrst_n) begin
+    always @(posedge clk or negedge rst_n) begin
+        if(!rst_n) begin
             current_state <= IDLE;
             winc <= 1'b0;
             addr_en <= 1'b0;
@@ -53,40 +54,38 @@ module fifo_fsm #(
                     write_fsm_busy <= 1'b0;
                     winc <= 1'b0;
                     addr_en <= 1'b0;
-                    read_mode_en <= 1'b0;	//
                     addr <= 0;
-
+                    if(rbtn_out) begin
+                    read_mode_en <= 1'b1;
+                    current_state <= SENT_READ;
+                    end
                     if(wbtn_en) begin
-                        current_state <= SENT; 
+                        current_state <= SENT_READ; 
                     end
                 end
 
-                SENT: begin				//
+                SENT_READ: begin				//
                     addr_en <= 1'b1;
                     write_fsm_busy <= 1'b1;
-                    current_state <= WRITE;
-                end
+                    winc <= 1'b0;
+                    if(rbtn_out && !rempty) begin
+						read_mode_en <= 1'b1;
+					end
+					current_state <= WRITE_READ;						
+                    end
 
-                WRITE: begin
+                WRITE_READ: begin
+					winc <= 1'b0;
+                    read_mode_en <= 1'b1;
                     if (!wfull) begin
                         winc <= 1'b1;
-                        addr <= addr + 1'b1; 
-                        
-                        if (addr == (1 << ADDR_WIDTH) - 1) begin
-                            current_state <= READ; 
-                        end
-                    end else begin
+                        addr <= addr + 1'b1;
+                    end else begin 
                         winc <= 1'b0;
+                        current_state <= IDLE;
                     end
                 end 
-                
-                READ: begin					//
-                    winc <= 1'b0;
-                    write_fsm_busy <= 1'b0;
-                    read_mode_en <= 1'b1;
-                end
-                
-                default: begin
+                    default: begin
                     current_state <= IDLE;
                 end
             endcase

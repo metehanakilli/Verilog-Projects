@@ -12,7 +12,7 @@ module write_pntr_handler
  
 )(  
 	input wire wclk,							//WRITE DOMAIN CLOCK 
-	input wire wrst_n,							//WRITE DOMAIN ACTIVE LOW RESET
+	input wire rst_n,							//WRITE DOMAIN ACTIVE LOW RESET
 	input wire winc,							//WRITE INCREMENT SIGNAL
 	input wire [DATA_WIDTH : 0] wq2_rpntr,		//SYNCHRONIZED READ POINTER
 	output wire wfull,							//FIFO FUL FLAG (SYNCHRON WITH wclk)
@@ -25,8 +25,8 @@ module write_pntr_handler
 	wire [DATA_WIDTH-1:0] wfill_level;
 	assign wfill_level = temp_cntr - wq2_rpntr;
 	
-	always @(posedge wclk or negedge wrst_n) begin : counter		//COUNTS wpntr	
-		if(!wrst_n) begin
+	always @(posedge wclk or negedge rst_n) begin : counter		//COUNTS wpntr	
+		if(!rst_n) begin
             temp_cntr <= 0;
         end else begin 
             if(winc && !wfull) begin

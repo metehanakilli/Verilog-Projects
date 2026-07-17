@@ -31,7 +31,7 @@ module debouncer #(
 	reg btn_sync_1;								//Intermediate stage for synchronizer
 	reg btn_sync_2;								//Synchronized button input
 	
-	always @(posedge clk or negedge rst_n) begin : synchronizer
+	always @(posedge clk or posedge rst_n) begin : synchronizer
 		if (!rst_n) begin
 			btn_sync_1 <= 1'b0;
 			btn_sync_2 <= 1'b0;
@@ -45,7 +45,7 @@ module debouncer #(
 // 20 bit Shift Register
 	reg [SHIFT_REG-1:0] samples;							//Number of shift register bit.
 	
-	always @(posedge clk or negedge rst_n) begin : shift_reg            //Writing synchronized button input with 1's in "samples"
+	always @(posedge clk or posedge rst_n) begin : shift_reg            //Writing synchronized button input with 1's in "samples"
 		if(!rst_n) begin          					               
 			samples <= 20'b0;					
 		end else begin
@@ -69,7 +69,7 @@ module debouncer #(
 	
 	
 // If the number of 1's is more than SUFFICIENT_NUMBER_OF_ONES, button out becomes 1.
-	always @(posedge clk_out or negedge rst_n) begin : debounce_input
+	always @(posedge clk_out or posedge rst_n) begin : debounce_input
 		if(!rst_n) begin 
 			btn_out <= 1'b0;
 		end else begin

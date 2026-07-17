@@ -15,7 +15,7 @@ module top_module_FIFO #(
 	parameter ONES_COUNT_BIT = 5
 )(
     input wire clk,
-    input wire rst_n,rrst_n,wrst_n, 
+    input wire rst_n,
     input wire rbtn_in,
     input wire wbtn_in,
 	
@@ -80,6 +80,7 @@ module top_module_FIFO #(
 	edge_detector 
 	edge_detector_write_inst(
 		.clk(wclk),
+		.rst_n(rst_n),
 		.det_in(wdebt_in),
 		.det_edge(wbtn_out)
 	);
@@ -108,7 +109,7 @@ module top_module_FIFO #(
 		.DATA_WIDTH(DATA_WIDTH)
     )synchronizer_inst_w (
 		.clk (rclk),
-		.rst_n (rrst_n),
+		.rst_n (rst_n),
 		.pntr_in(gray_writer),
 		.pntr_out(rq2_wpntr_g)
 	);
@@ -134,6 +135,7 @@ module top_module_FIFO #(
 	edge_detector 
 	edge_detector_read_inst(
 		.clk(rclk),
+		.rst_n(rst_n),
 		.det_in(rdebt_in),
 		.det_edge(rbtn_out)
 	);
@@ -141,7 +143,7 @@ module top_module_FIFO #(
 	read_controller 
 	read_controller_inst(
 		.clk(rclk),
-		.rst_n(rrst_n),		//
+		.rst_n(rst_n),		//
 		.rbtn_out(rbtn_out),
 		.read_mode_en(read_mode_rclk),	//
 		.rinc(rinc)
@@ -171,7 +173,7 @@ module top_module_FIFO #(
 		.DATA_WIDTH(DATA_WIDTH)
     )synchronizer_inst_r (
 		.clk (wclk),
-		.rst_n (wrst_n),
+		.rst_n (rst_n),
 		.pntr_in(gray_reader),
 		.pntr_out(wq2_rpntr_g)
 	);
@@ -188,7 +190,7 @@ module top_module_FIFO #(
 		.DATA_WIDTH(DATA_WIDTH)
     )write_pntr_handler_inst_w (
 		.wclk(wclk),
-		.wrst_n(wrst_n),
+		.rst_n(rst_n),
 		.winc(winc),
 		.wq2_rpntr(wq2_rpntr),
 		.wfull(wfull),
@@ -202,7 +204,7 @@ module top_module_FIFO #(
 		.DATA_WIDTH(DATA_WIDTH)
     )read_pntr_handler_inst_r (
 		.rclk(rclk),
-		.rrst_n(rrst_n),
+		.rst_n(rst_n),
 		.rinc(rinc),
 		.rq2_wpntr(rq2_wpntr),
 		.rempty(rempty),
@@ -218,6 +220,8 @@ module top_module_FIFO #(
 	) FIFO_memory_inst(
 		.wdata(wdata),
 		.rdata(rdata),
+		.raddr(raddr),
+		.waddr(waddr),
 		.rst_n(rst_n),
 		.rinc(rinc),
 		.wclk(wclk),
@@ -230,7 +234,7 @@ module top_module_FIFO #(
 		.ADDR_WIDTH(ADDR_WIDTH)
 	)lut_rom_inst(
 		.rom_clk(wclk),
-		.wrst_n(wrst_n),
+		.rst_n(rst_n),
 		.data_out(wdata),
 		.addr(addr),
 		.addr_en(addr_en)
@@ -241,8 +245,10 @@ module top_module_FIFO #(
 	fifo_fsm_inst(
 		.clk(wclk),
 		.wfull(wfull),
-		.wrst_n(wrst_n),
+		.rst_n(rst_n),
 		.wbtn_out(wbtn_out),
+		.rempty(rempty),
+		.rbtn_out(rbtn_out),
 		.write_fsm_busy(write_fsm_busy),
 		.addr_en(addr_en),
 		.winc(winc),
@@ -255,7 +261,7 @@ module top_module_FIFO #(
         .DATA_WIDTH(0)
     ) synchronizer_read_auth (
         .clk (rclk),
-        .rst_n (rrst_n),
+        .rst_n (rst_n),
         .pntr_in(read_mode_wclk),
         .pntr_out(read_mode_rclk)
     );
@@ -264,14 +270,14 @@ module top_module_FIFO #(
 	always @(*) begin
         led = 8'b0; 
         if (SW[7 : 0] == 8'h00) begin
-            led = rdata;
+            led <= rdata;
         end 
         else if (SW[7 : 0] == 8'h01) begin
-            led[0] = wfull;
-            led[1] = rempty;
-            led[2] = write_fsm_busy;
-            led[3] = wbtn_out;
-            led[4] = rbtn_out;
+            led[0] <= wfull;
+            led[1] <= rempty;
+            led[2] <= write_fsm_busy;
+            led[3] <= wbtn_out;
+            led[4] <= rbtn_out;
         end
     end
     

@@ -18,7 +18,7 @@ module clock_divider
 	
 	reg [N_BIT-1 : 0] counter;		  //Counter reg for divide system clock, triggers clk_out
 	
-	always @(posedge clk or negedge rst_n) begin
+	always @(posedge clk or posedge rst_n) begin
 		if (!rst_n) begin
 			counter <= 0;				//If rst triggered --> reset the counter and clk_out 
 			clk_out <= 0;

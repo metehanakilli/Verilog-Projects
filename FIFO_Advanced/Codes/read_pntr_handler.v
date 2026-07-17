@@ -12,7 +12,7 @@ module read_pntr_handler
 
 )(  
 	input wire rclk,							//READ DOMAIN CLOCK 
-	input wire rrst_n,							//READ DOMAIN ACTIVE LOW RESET
+	input wire rst_n,							//READ DOMAIN ACTIVE LOW RESET
 	input wire rinc,							//READ INCREMENT SIGNAL
 	input wire [DATA_WIDTH : 0] rq2_wpntr,		//SYNCHRONIZED WRITE POINTER
 	output wire rempty,							//FIFO EMPTY FLAG (SYNCHRON WITH rclk)
@@ -27,8 +27,8 @@ module read_pntr_handler
 	assign almost_rempty_1 = (temp_cntr[DATA_WIDTH:0]+ 'd3 >= rq2_wpntr[DATA_WIDTH:0] || temp_cntr[DATA_WIDTH:0]>= rq2_wpntr[DATA_WIDTH:0]+ 'd25);
 	assign almost_rempty = almost_rempty_1 ^ rempty;
 	
-	always @(posedge rclk or negedge rrst_n) begin : counter		//COUNTS rpntr	
-		if (!rrst_n) begin
+	always @(posedge rclk or negedge rst_n) begin : counter		//COUNTS rpntr	
+		if (!rst_n) begin
 			temp_cntr <= 0;
 		end 
 			else begin

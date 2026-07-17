@@ -20,8 +20,6 @@ create_generated_clock -name rclk \
 set_clock_groups -asynchronous -group [get_clocks wclk] -group [get_clocks rclk]
 
 
-set_false_path -from [get_ports wrst_n]
-set_false_path -from [get_ports rrst_n]
 
 ## FMC Transceiver clocks (Must be set to value provided by Mezzanine card, currently set to 156.25 MHz)
 ## Note: This clock is attached to a MGTREFCLK pin
