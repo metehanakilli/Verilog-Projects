@@ -19,7 +19,7 @@ module top_module_FIFO_TB;
 
 
     reg clk;
-    reg rst_n, rrst_n, wrst_n;
+    reg rst_n;
     reg rbtn_in;
     reg wbtn_in;
     reg [7:0] SW;
@@ -55,8 +55,6 @@ module top_module_FIFO_TB;
     ) uut (
         .clk(clk),
         .rst_n(rst_n),
-        .rrst_n(rrst_n),
-        .wrst_n(wrst_n),
         .rbtn_in(rbtn_in),
         .wbtn_in(wbtn_in),
         .SW(SW),
@@ -114,14 +112,12 @@ module top_module_FIFO_TB;
         
         clk = 0;
         rst_n = 0;
-        rrst_n = 0;
-        wrst_n = 0;
         wbtn_in = 0;
         rbtn_in = 0;
         SW = 8'h00;
 
         #100;
-        rst_n = 1; rrst_n = 1; wrst_n = 1;
+        rst_n = 1;
         #1000;
 
         // SENARYO 1: WRITE Modu Tetikleme (IDLE -> SENT -> WRITE)
@@ -160,8 +156,8 @@ module top_module_FIFO_TB;
         // SENARYO 4: FSM Write Durumundayken Okuma Denemesi (İzin Verilmemeli)
         $display("[SENARYO 4] FSM Write durumundayken okuma girisimi (Hata Tolerans Testi)...");
         
-        rst_n = 0; rrst_n = 0; wrst_n = 0; #100;
-        rst_n = 1; rrst_n = 1; wrst_n = 1; #1000;
+        rst_n = 0; #100;
+        rst_n = 1; #1000;
 
         fork
             begin
