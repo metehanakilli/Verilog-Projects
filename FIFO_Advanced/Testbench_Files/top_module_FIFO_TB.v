@@ -11,8 +11,8 @@
 
 module top_module_FIFO_TB;
 
-    parameter DATA_WIDTH = 8;
-    parameter ADDR_WIDTH = 7;
+    parameter DATA_WIDTH = 7;
+    parameter ADDR_WIDTH = 6;
     parameter SHIFT_REG = 20;
     parameter SUFFICIENT_NUMBER_OF_ONES = 12;
     parameter ONES_COUNT_BIT = 5;
@@ -22,7 +22,7 @@ module top_module_FIFO_TB;
     reg rst_n;
     reg rbtn_in;
     reg wbtn_in;
-    reg [7:0] SW;
+    reg [6:0] SW;
 
 
     wire wfull;
@@ -37,7 +37,7 @@ module top_module_FIFO_TB;
     wire [DATA_WIDTH:0] rq2_wpntr;
     wire [DATA_WIDTH-1:0] rdata;
     wire [DATA_WIDTH-1:0] wdata;
-    wire [7:0] led;
+    wire [6:0] led;
     wire wclk;
     wire rclk;
     wire wbtn_out;
