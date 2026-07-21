@@ -5,3 +5,8 @@ transcript
 *.vcd
 *.bak
 *.log
+
+*.wdb
+.Xil/
+*.jou
+*.pb

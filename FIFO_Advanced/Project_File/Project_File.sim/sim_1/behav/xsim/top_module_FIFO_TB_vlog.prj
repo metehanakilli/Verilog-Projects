@@ -1,0 +1,22 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  --include "../../../../../../../Xilinx/2025.1/Vivado/data/rsb/busdef" \
+"../../../../../Codes/FIFO_memory.v" \
+"../../../../../Codes/bin2gray.v" \
+"../../../../../Codes/clock_divider.v" \
+"../../../../../Codes/debouncer.v" \
+"../../../../../Codes/edge_detector.v" \
+"../../../../../Codes/fifo_fsm.v" \
+"../../../../../Codes/gray2bin.v" \
+"../../../../../Codes/lut_rom.v" \
+"../../../../../Codes/read_controller.v" \
+"../../../../../Codes/read_pntr_handler.v" \
+"../../../../../Codes/synchronizer.v" \
+"../../../../../Codes/top_module_FIFO.v" \
+"../../../../../Codes/write_pntr_handler.v" \
+"../../../../../Testbench_Files/top_module_FIFO_TB.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
