@@ -216,8 +216,7 @@ module top_module_FIFO #(
 	
 	
 	read_pntr_handler #(
-		.DATA_WIDTH(DATA_WIDTH),
-		.ADDR_WIDTH(ADDR_WIDTH)
+		.DATA_WIDTH(DATA_WIDTH)
     )read_pntr_handler_inst_r (
 		.rclk(rclk),
 		.rst_n(rst_n),
