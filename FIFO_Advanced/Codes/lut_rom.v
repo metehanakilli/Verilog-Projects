@@ -9,17 +9,17 @@
 
 
 module lut_rom #( 
-	parameter DATA_WIDTH = 7'd7,
-	parameter ADDR_WIDTH = 6'd6
+	parameter DATA_WIDTH = 8'd8,
+	parameter ADDR_WIDTH = 7'd7
 )(
-	input wire rom_clk,	 								//CLOCK FOR ROM MEMORY 5MHz
-	input wire addr_en,
-	input wire rst_n,
-	input wire [ADDR_WIDTH-1 : 0] addr,
-	output wire [DATA_WIDTH-1 : 0] data_out				//DATA FOR WRITE FIFO
+	input wire rom_clk,	 								//CLOCK FOR ROM MEMORY : 5MHz
+	input wire rst_n,									//SYSTEM RESET : ACTIVE-LOW
+	input wire addr_en,									//ENABLE SIGNAL FOR READ DATA FROM ROM								
+	input wire [ADDR_WIDTH : 0] addr,					
+	output wire [DATA_WIDTH-1 : 0] data_out				//READED DATA FROM ROM
 );
-	reg [DATA_WIDTH-1:0] rom_mem [0 : 127];		//ROM MEMORY DESCRIPTION
-	reg [DATA_WIDTH-1 : 0] data_out_i;
+	reg [DATA_WIDTH-1:0] rom_mem [0 : 255];				//ROM MEMORY DESCRIPTION
+	reg [DATA_WIDTH-1 : 0] data_out_i;					//TEMPORARILY READED DATA
 	
 	initial begin
 		$readmemb ("memory8bit.mem", rom_mem);			//AUTOMATIC INITIALIZATION

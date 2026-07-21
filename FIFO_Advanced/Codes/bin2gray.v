@@ -13,8 +13,8 @@ module bin2gray
 #(  parameter DATA_WIDTH = 8'd8				//Bit Size of data
 
 )(  
-	input wire [DATA_WIDTH : 0] bin,		//Data as a Binary	
-	output wire [DATA_WIDTH : 0] gray		//Data as a Gray code
+	input wire [DATA_WIDTH -1 : 0] bin,		//Data as a Binary input
+	output wire [DATA_WIDTH -1 : 0] gray		//Data as a Gray coded output
 );
 
 	assign gray = bin ^ (bin >> 1); 		// (bin) XOR (the value bin shifted 1 bit to right)

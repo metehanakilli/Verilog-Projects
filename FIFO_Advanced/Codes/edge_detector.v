@@ -14,7 +14,7 @@ module edge_detector(
     input wire det_in,     // WILL BE CONNECTED WITH rbtn_out IN TOP MODULE
     output wire det_edge   // DETECTED EDGE FROM btn_out
 );
-    reg det_in_delay;      // Delayed version of the INPUT signal (not the clock)
+    reg det_in_delay;      // DELAYED VERSION OF THE det_in INPUT SIGNAL
 
     always @(posedge clk or negedge rst_n) begin
 		if(!rst_n) begin

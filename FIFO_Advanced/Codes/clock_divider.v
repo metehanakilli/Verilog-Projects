@@ -8,19 +8,19 @@
 */
 
 module clock_divider 
-#( parameter DIVIDE_RATE = 2,			//division rate of system clock
-   parameter N_BIT = 8						//BIT RATE OF COUNTER REG 
+#( parameter DIVIDE_RATE = 2,										//DIVISION RATE OF SYSTEM CLOCK
+   parameter N_BIT = 8												//BIT RATE OF COUNTER REG 
    
-)(  input wire clk,				//System Clock : 100MHz / Input clock of Divider
-	input wire rst_n,				//System reset
-	output reg clk_out			//Divided Clock / Output Clock of Divider
+)(  input wire clk,													//SYSTEM CLOCK : 100MHz / INPUT CLOCK OF DIVIDER
+	input wire rst_n,												//SYSTEM RESET
+	output reg clk_out												//DIVIDED CLOCK / OUTPUT CLOCK OF DIVIDER
 );
 	
-	reg [N_BIT-1 : 0] counter;		  //Counter reg for divide system clock, triggers clk_out
+	reg [N_BIT-1 : 0] counter;		  								//counter REG FOR DIVIDE SYSTEM CLOCK, TRIGGERS clk_out
 	
-	always @(posedge clk or posedge rst_n) begin
-		if (!rst_n) begin
-			counter <= 0;				//If rst triggered --> reset the counter and clk_out 
+	always @(posedge clk or negedge rst_n) begin
+		if (!rst_n) begin											//IF rst_n TRIGGERED --> RESET THE counter AND clk_out 
+			counter <= 0;
 			clk_out <= 0;
 		end else begin
 			if (counter >= (DIVIDE_RATE >> 1) - 1) begin

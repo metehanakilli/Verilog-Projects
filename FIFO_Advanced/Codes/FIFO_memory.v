@@ -9,36 +9,34 @@
 
 
 module FIFO_memory #(
-	parameter DATA_WIDTH = 7'd7,
-	parameter ADDR_WIDTH = 6'd6
+	parameter DATA_WIDTH = 8'd8,
+	parameter ADDR_WIDTH = 7'd7
 )(
-	input wire wclk,
-	input wire rclk,
-	input wire rst_n,
-	input wire wclk_en,
-	input wire rinc,
-	input wire [DATA_WIDTH-1 :0] raddr,
-	input wire [DATA_WIDTH-1 :0] waddr,
-	input wire [DATA_WIDTH-1 : 0] wdata,
-	output wire [DATA_WIDTH-1 : 0]rdata
+	input wire clk,
+	input wire rst_n,							//SYSTEM RESET : ACTIVE-LOW
+	input wire wclk_en,							//ENABLE CLOCK FOR WRITE DATA FROM ROM TO FIFO
+	input wire rinc,							//ENABLE SIGNAL FOR READ DATA FROM FIFO
+	input wire [ADDR_WIDTH-1 :0] raddr,			//READED DATA'S ADDRESS
+	input wire [ADDR_WIDTH-1 :0] waddr,			//WRITED  DATA'S ADDRESS
+	input wire [DATA_WIDTH-1 : 0] wdata,		//WRITED DATA FROM ROM TO FIFO
+	output wire [DATA_WIDTH-1 : 0]rdata			//READED DATA FROM FIFO
 );
-	reg [DATA_WIDTH-1 : 0] ram [0 : 127];
-	reg [DATA_WIDTH-1 : 0] rdata_i;
+	reg [DATA_WIDTH-1 : 0] ram [0 : 127];		//FIFO MEMORY
+	reg [DATA_WIDTH-1 : 0] rdata_i;				//TEMPORARILY READED DATA FROM FIFO
+
 	
-	integer i;
-	
-	always @(posedge wclk)begin
-			if(wclk_en) begin
+	always @(posedge clk)begin 
+			if(wclk_en) begin					//IF WRITE ENABLE SIGNAL COMES WRITE DATA TO FIFO
 				ram[waddr] 		<= wdata;
 			end
 		end
 	
 
-	always @(posedge rclk or negedge rst_n) begin
+	always @(posedge clk or negedge rst_n) begin
 		if(!rst_n) begin
 			rdata_i <= 0;
 		end else begin
-			if(rinc ) begin
+			if(rinc ) begin						//IF READ ENABLE SIGNAL COMES READ DATA FROM FIFO
 				rdata_i 	<= ram[raddr];
 			end
 		end

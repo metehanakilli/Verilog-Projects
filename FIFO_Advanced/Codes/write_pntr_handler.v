@@ -8,21 +8,22 @@
 */
 
 module write_pntr_handler
-#(  parameter DATA_WIDTH = 5'd5					//BIT SIZE
+#(  parameter DATA_WIDTH = 8'd8									//BIT SIZE
  
 )(  
-	input wire wclk,							//WRITE DOMAIN CLOCK 
-	input wire rst_n,							//WRITE DOMAIN ACTIVE LOW RESET
-	input wire winc,							//WRITE INCREMENT SIGNAL
-	input wire [DATA_WIDTH : 0] wq2_rpntr,		//SYNCHRONIZED READ POINTER
-	output wire wfull,							//FIFO FUL FLAG (SYNCHRON WITH wclk)
-	output wire almost_wfull,					//FIFO ALMOST FULL FLAG (SYNCHRON WITH wclk)
-	output wire [DATA_WIDTH-1 : 0] waddr,		//ADDRES FOR WRITE DATA TO FIFO MEMORY
-	output wire [DATA_WIDTH : 0] wpntr			//WRITE POINTER
+	input wire wclk,											//WRITE DOMAIN CLOCK 
+	input wire rst_n,											//WRITE DOMAIN ACTIVE LOW RESET
+	input wire winc,											//WRITE INCREMENT SIGNAL
+	input wire [DATA_WIDTH -1 : 0] wq2_rpntr,						//SYNCHRONIZED READ POINTER
+	output wire wfull,											//FIFO FUL FLAG (SYNCHRON WITH wclk)
+	output wire almost_wfull,									//FIFO ALMOST FULL FLAG (SYNCHRON WITH wclk)
+	output wire [DATA_WIDTH-2 : 0] waddr,						//ADDRES FOR WRITE DATA TO FIFO MEMORY
+	output wire [DATA_WIDTH-1 : 0] wpntr							//WRITE POINTER
 );
 
-	reg [DATA_WIDTH:0] temp_cntr;				//TEMPORARILY OUTPUT OF COUNTER
+	reg [DATA_WIDTH-1:0] temp_cntr;								//TEMPORARILY OUTPUT OF COUNTER
 	wire [DATA_WIDTH-1:0] wfill_level;
+
 	assign wfill_level = temp_cntr - wq2_rpntr;
 	
 	always @(posedge wclk or negedge rst_n) begin : counter		//COUNTS wpntr	
@@ -35,10 +36,10 @@ module write_pntr_handler
         end
 	end
 
-	assign wpntr = temp_cntr;								//ASSIGNING THE TEMPORARILY OUTPUT TO OUTPUT OF THE write_pntr_handler
-	assign waddr = wpntr [DATA_WIDTH-1 : 0];
-	assign wfull = (temp_cntr[DATA_WIDTH] != wq2_rpntr[DATA_WIDTH] && temp_cntr[DATA_WIDTH-1:0] == wq2_rpntr[DATA_WIDTH-1:0]);
-	assign almost_wfull = (wfill_level >= (1 << DATA_WIDTH)-8);
+	assign wpntr = temp_cntr;									//ASSIGNING THE TEMPORARILY OUTPUT TO OUTPUT OF THE write_pntr_handler
+	assign waddr = wpntr [DATA_WIDTH-2 : 0];
+	assign wfull = (temp_cntr[DATA_WIDTH-1] != wq2_rpntr[DATA_WIDTH-1] && temp_cntr[DATA_WIDTH-2:0] == wq2_rpntr[DATA_WIDTH-2:0]);
+	assign almost_wfull = (wfill_level >= (1 << (DATA_WIDTH-1))-8);
 	
 
 endmodule
