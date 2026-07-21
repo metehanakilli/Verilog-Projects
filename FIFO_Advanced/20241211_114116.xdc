@@ -11,7 +11,9 @@ create_generated_clock -name wclk -source [get_ports clk] -divide_by 20 [get_pin
 
 create_generated_clock -name rclk -source [get_ports clk] -divide_by 100 [get_pins clock_divider_rclk_inst/clk_out_reg/Q]
 
-set_clock_groups -asynchronous -group [get_clocks wclk] -group [get_clocks rclk]
+create_generated_clock -name deb_clk -source [get_ports clk] -divide_by 100000 [get_pins clock_divider_deb_inst/clk_out_reg/Q]
+
+set_clock_groups -asynchronous -group [get_clocks clk_100mhz] -group [get_clocks deb_clk] -group [get_clocks wclk] -group [get_clocks rclk]
 
 
 
