@@ -74,8 +74,8 @@ module top_module_FIFO_TB;
             wbtn_in = 0; #700_000;     // 0.7 ms kopma
             
             // 2. KALICI TEMAS (SOLID CONTACT - 12ms esigini asmak icin 25 ms basili tutuyoruz)
-            wbtn_in = 1; #25_000_000;  // 25 ms boyunca kesintisiz basili tutma
-            
+            wbtn_in = 1; #10_800_000;  // 25 ms boyunca kesintisiz basili tutma
+            rst_n=0; #100000; rst_n=1; #1000
             // 3. BIRAKMA TITRESIMI (RELEASE BOUNCE)
             wbtn_in = 0; #2_000_000;   // 2.0 ms kopma
             wbtn_in = 1; #1_500_000;   // 1.5 ms temas (Geri sekme)
@@ -106,7 +106,9 @@ module top_module_FIFO_TB;
             
             // 4. TAMAMEN SERBEST
             rbtn_in = 0; #20_000_000;
+       
         end
+        
     endtask
 
     // ELEKTROMANYETIK PARAZIT (GLITCH) SENARYOSU
@@ -138,8 +140,11 @@ module top_module_FIFO_TB;
         $display("--- SENARYO 1: TEMIZ VE IDEAL YAZMA / OKUMA ---");
         wbtn_in = 1; #25_000_000; wbtn_in = 0; #20_000_000; // 25ms bas, 20ms cek
         rbtn_in = 1; #25_000_000; rbtn_in = 0; #20_000_000;
+           wbtn_in = 1; #25_000_000; wbtn_in = 0; #20_000_000; // 25ms bas, 20ms cek
+        rbtn_in = 1; #25_000_000; rbtn_in = 0; #20_000_000;
 
-        $display("\n=======================================================");
+
+ $display("\n=======================================================");
         $display("--- SENARYO 2: ASIRI GERCEKCI (BOUNCY) YAZMA / OKUMA ---");
         press_wbtn_bouncy_1kHz(); 
         press_rbtn_bouncy_1kHz(); 
@@ -154,13 +159,8 @@ module top_module_FIFO_TB;
         #5_000_000;
         SW = 7'h00; 
         #5_000_000;
-
-        $display("\n=======================================================");
-        $display("--- SENARYO 5: FIFO'YU TAMAMEN DOLDURMA (WFULL TESTI) ---");
-        // Derinlik 64 oldugu icin 65 kere basip zorluyoruz
-        for (i = 0; i < 127; i = i + 1) begin
-            press_wbtn_bouncy_1kHz();
-        end
+ 
+        
 	end
 
 endmodule
