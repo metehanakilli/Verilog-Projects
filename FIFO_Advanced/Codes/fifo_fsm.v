@@ -49,6 +49,7 @@ module fifo_fsm #(
 				SENT: begin								//FSM SENDS DATA FROM ROM TO FIFO FOW WRITE
 					if(wfull) begin						//IF FIFO FULL, RESET addr ---> ROM ADRESS RESET
 						winc <= 0;
+						current_state <= IDLE;
                     end
 					addr_en <= 1'b1;
 					write_fsm_busy <= 1'b1;
