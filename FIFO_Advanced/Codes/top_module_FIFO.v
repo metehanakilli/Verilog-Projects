@@ -85,8 +85,8 @@ module top_module_FIFO #(
     
     
     clock_divider #(							//CLOCK DIVIDER FOR DEBOUNCER WRITE AND READ BUTTON
-		.DIVIDE_RATE (100000),		
-		.N_BIT (20)
+		.DIVIDE_RATE (5000000),		
+		.N_BIT (27)
     )clock_divider_deb_inst(							
 		.clk(clk),
 		.rst_n(rst_n_clk),

@@ -39,7 +39,7 @@ module write_pntr_handler
 	assign wpntr = temp_cntr;									//ASSIGNING THE TEMPORARILY OUTPUT TO OUTPUT OF THE write_pntr_handler
 	assign waddr = wpntr [DATA_WIDTH-2 : 0];
 	assign wfull = (temp_cntr[DATA_WIDTH-1] != wq2_rpntr[DATA_WIDTH-1] && temp_cntr[DATA_WIDTH-2:0] == wq2_rpntr[DATA_WIDTH-2:0]);
-	assign almost_wfull = (wfill_level >= (1 << (DATA_WIDTH-1))-8);
+	assign almost_wfull = (wfill_level >= (1 << (DATA_WIDTH-1))-8) && !wfull;
 	
 
 endmodule

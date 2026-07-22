@@ -27,7 +27,7 @@ module read_pntr_handler
 	
 	assign rfill_level = rq2_wpntr - temp_cntr;
 	assign rempty = (temp_cntr[DATA_WIDTH-1:0] == rq2_wpntr[DATA_WIDTH-1:0] );
-	assign almost_rempty = (rfill_level <= 8'd3) && !rempty;
+	assign almost_rempty = (rfill_level <= 8'd8) && !rempty;
 	
 	always @(posedge rclk or negedge rst_n) begin : counter		//COUNTS rpntr	
 		if (!rst_n) begin

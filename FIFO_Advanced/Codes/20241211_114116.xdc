@@ -5,6 +5,8 @@
 
 
 ## Clock Signal
+set_property PACKAGE_PIN R4 [get_ports clk]
+set_property IOSTANDARD LVCMOS12 [get_ports clk]
 create_clock -period 10.000 -name clk_100mhz [get_ports clk]
 
 create_generated_clock -name wclk -source [get_ports clk] -divide_by 20 [get_pins clock_divider_wclk_inst/clk_out_reg/Q]
@@ -13,7 +15,6 @@ create_generated_clock -name rclk -source [get_ports clk] -divide_by 100 [get_pi
 
 create_generated_clock -name deb_clk -source [get_ports clk] -divide_by 100000 [get_pins clock_divider_deb_inst/clk_out_reg/Q]
 
-set_clock_groups -asynchronous -group [get_clocks clk_100mhz] -group [get_clocks deb_clk] -group [get_clocks wclk] -group [get_clocks rclk]
 
 set_false_path -from [get_ports rst_n]
 
@@ -39,8 +40,8 @@ set_property -dict {PACKAGE_PIN W15 IOSTANDARD LVCMOS25} [get_ports {led[6]}]
 
 
 ## Buttons
-#set_property -dict { PACKAGE_PIN B22 IOSTANDARD LVCMOS12 } [get_ports { wrst_n }]; #IO_L20N_T3_16 Sch=btnc
-#set_property -dict { PACKAGE_PIN D22 IOSTANDARD LVCMOS12 } [get_ports { rrst_n }]; #IO_L22N_T3_16 Sch=btnd
+set_property -dict { PACKAGE_PIN B22 IOSTANDARD LVCMOS12 } [get_ports { wbtn_in }]; #IO_L20N_T3_16 Sch=btnc
+set_property -dict { PACKAGE_PIN D22 IOSTANDARD LVCMOS12 } [get_ports { rbtn_in }]; #IO_L22N_T3_16 Sch=btnd
 #set_property -dict { PACKAGE_PIN C22 IOSTANDARD LVCMOS12 } [get_ports { btnl }]; #IO_L20P_T3_16 Sch=btnl
 #set_property -dict { PACKAGE_PIN D14 IOSTANDARD LVCMOS12 } [get_ports { btnr }]; #IO_L6P_T0_16 Sch=btnr
 #set_property -dict { PACKAGE_PIN F15 IOSTANDARD LVCMOS12 } [get_ports { btnu }]; #IO_0_16 Sch=btnu
@@ -320,13 +321,3 @@ set_property -dict {PACKAGE_PIN K13 IOSTANDARD LVCMOS12} [get_ports {SW[6]}]
 set_property CONFIG_VOLTAGE 3.3 [current_design]
 set_property CFGBVS VCCO [current_design]
 
-set_property PACKAGE_PIN R4 [get_ports clk]
-set_property PACKAGE_PIN D22 [get_ports rbtn_in]
-set_property PACKAGE_PIN B22 [get_ports wbtn_in]
-set_property IOSTANDARD LVCMOS12 [get_ports clk]
-set_property IOSTANDARD LVCMOS12 [get_ports rbtn_in]
-set_property IOSTANDARD LVCMOS12 [get_ports wbtn_in]
-set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
-set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
-set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
-connect_debug_port dbg_hub/clk [get_nets rclk]

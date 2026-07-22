@@ -54,7 +54,7 @@ module debouncer #(
 	reg [ONES_COUNT_BIT-1 :0] ones_count;							//COUNTER FOR 1'S
 	integer i;
 	
-	always @(posedge clk) begin : count_ones								 
+	always @(posedge clk_out) begin : count_ones								 
 		ones_count <= 0;
 		for(i=0; i<SHIFT_REG; i=i+1) begin
 			if(samples[i] == 1) begin
