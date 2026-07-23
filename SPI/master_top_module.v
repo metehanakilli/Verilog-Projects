@@ -36,14 +36,6 @@ module master_top_module
 	);
 
     
-    clock_divider #(							//CLOCK FOR DEBOUNCERS 
-		.DIVIDE_RATE (500000),		
-		.N_BIT (27)
-    )clock_divider_deb_inst(							
-		.clk(clk),
-		.rst_n(rst_n_clk),
-		.clk_out(deb_clk)
-	);
     
 
     debouncer #(
@@ -90,18 +82,13 @@ module master_top_module
 	);
 
 
-	master_controller#(
+	master_controller_fsm#(
 	
 	)master_controller_inst(
 	
 	);
+
 	
-	
-	spi_master#(
-	
-	)spi_master_inst(
-	
-	);
 	
 	
 	
