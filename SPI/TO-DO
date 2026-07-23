@@ -1,0 +1,65 @@
+*************TO DO**********************
+
+-EITHER MASTER AND SLAVE DEVICE HAVE TO USE shift_reg INTERNALLY FOR SERIAL COMMUNICATION
+
+-TO SUPPORT MULTIDROP BUS SLAVE DEVICES SHOULD USE TRI-STATE OUTPUTS. WITHOUT IT SLAVES CANNOT SHARE A MISO LINE WITH OTHER SLAVES.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+*************DATA TRANSMISSION PROGRESS*****************
+
+-TO BEGIN COMMUNICATION, SPI MASTER SELECT THE DEVICE IT WANTS TO COMMUNICATE WITH BY PULLING ITS ssel signal LOW. (ssel: ACTIVE-LOW SIGNAL)
+
+-IF A WAITING PERIOD IS REQUIRED, THE MASTER MUST WAIT FOR AT LEAST A PERIOD OF TIME
+
+-DURING EACH SPI CLOCK CYCLE, THE MASTER SENDS A BIT ON THE MOSI LINE WITH THE SLAVE SENDS A BIT ON THE MISO LINE AND EACH READS THEIR CORRESPONDING INCOMING BIT.
+
+-ON THE CLOCK EDGE, BOTH MASTER AND SLAVE SHIFT OUT A BIT TO ITS COUNTER PARTS.
+
+-EACH RECEIVER SAMPLES THE TRASMITTED BIT AND STORES IT IN THE SHIFT REGISTER AS THE NEW LSB
+
+-AFTER ALL BITS HAVE BEEN SHIFTED OUT AND IN, THE MASTER AND SLAVE HAVE EXCHANGED THEIR REGISTER VALUES. 
+ IF MORE DATA NEEDS TO BE EXCHANGED, THE SHIFT REGISTERS ARE RELOADED AND THE PROCESS REPEATS.
+ 
+-WHEN COMPLETE, MASTER STOPS TOGGLING THE CLOCK SIGNAL AND DESELECT SLAVES (ssel<=1)
+
+-EXCEPT THE SELECTED SLAVE, THE OTHERS SHOULD DISREGARD THE INPUT CLOCK AND MOSI SIGNALS. TO PREVENT CONNECTION ON MISO, THESE SLAVES MUST USE TRISTATE OUTPUT.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+*************CLOCK POLARITY (CPOL) AND PHASE (CPHA)*****************
+
+-THE MASTER MUST CONFIGURE CLOCK PARITY AND PHASE WITH RESPECT TO THE DATA.
+
+SPI mode---- Clock polarity(CPOL)---- Clock phase(CPHA)------------- Data is shifted out on-------------- Data is sampled on
+	0					0						0 			falling SCLK, and when SS activates				rising SCLK
+	1					0						1 						rising SCLK							falling SCLK
+	2					1						0 			rising SCLK, and when SS activates				falling SCLK
+	3					1						1 						falling SCLK						rising SCLK
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+*************MULTIDROP CONFIG**************
+-EACH SLAVE HAS ITS OWN ssel, AND MASTER SELECTS ONLY ONE AT A TIME.
+
+-MISO, SCLK, AND MOSI ARE EACH SHARED BY ALL DEVICES
+
+!!! ALL ssel SIGNALS SHOULD START HIGH. ANOTHER SOLUTION IS TO ADD A PUll-UP RESISTOR. IF THE MASTER USES GPIO PINS THATS A REAL CONCERN
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+*************DAISY CHAIN CONFIG**************
+-THE FIRST SLAVE'S OUTPUT IS CONNECTED TO THE SECOND SLAVE'S INPUT AND IT CONTINUES LIKE THAT TILL THE FINAL SLAVE 
+ AND FINAL SLAVE'S OUTPUT IS CONNECTED BACK TO THE MASTER'S INPUT.
+ 
+-THIS CONFIGURATION REQUIRES ONLY A ssel FOR ALL SLAVES AND SHIFT REGISTERS OF EACH SLAVE 
+ TO FORM A SINGLE LARGER COMBINED SHIFT REGISTER THAT SHIFTS DATA THROUGH THE CHAIN 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+*************EXPANDER CONFIG**************
+-USE SPI-CONTROLLED ADDRESSING UNITS (BINARY DECODERS, DEMUXES OR SHIFT REGISTERS) TO ADD ssel 's.
+
+- 
